@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
-    <title>にっぽんちず試作（北海道・東北・関東・中部・近畿・中国・四国・九州・沖縄）</title>
+    <title>にっぽんちず</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
@@ -323,7 +323,7 @@
   <body>
     <main>
       <h1>さめちゃんと しまちゃんの にっぽんちず
-        <span class="sub">ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわ ブロック（しさく）</span>
+        <span class="sub">ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわ</span>
       </h1>
       <p class="lead">ちずを タップして、あそびながら おぼえる にっぽんちず。かく れんしゅうは ありません。きいて、さがして、えらぶだけ。</p>
       <div class="btn-row">
@@ -419,7 +419,32 @@
         <div class="cal-detail" id="cal-detail" aria-live="polite"></div>
       </section>
 
-      <footer>しさく<ruby>版<rt>ばん</rt></ruby>：きろくは サンプルの データで うごいています。</footer>
+      <!-- リセット -->
+      <section class="card" aria-labelledby="reset-h">
+        <div class="head-row">
+          <div>
+            <h2 id="reset-h">きろくを リセット</h2>
+            <p class="card-note">おぼえた <ruby>県<rt>けん</rt></ruby>、れんしゅうの <ruby>回数<rt>かいすう</rt></ruby>、カレンダーの スタンプを ぜんぶ けして、はじめからに もどします。きろくは この たんまつに ほぞんされています。</p>
+          </div>
+          <button class="btn btn-ghost btn-small" id="reset-listen" type="button" aria-label="リセットの せつめいを きく">🔊 きく</button>
+        </div>
+        <div id="reset-main">
+          <div class="btn-row">
+            <button class="btn btn-ghost" id="reset-btn" type="button" style="border-color:var(--coral);color:var(--coral)">きろくを ぜんぶ けす</button>
+          </div>
+        </div>
+        <div id="reset-confirm" hidden>
+          <p style="font-weight:800;margin:6px 0 4px">ほんとうに ぜんぶ けしますか？</p>
+          <p class="gentle" style="margin:0">けした きろくは もどせません。</p>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="reset-yes" type="button">はい、けします</button>
+            <button class="btn btn-ghost" id="reset-cancel" type="button">やめる</button>
+          </div>
+        </div>
+        <p class="feedback" id="reset-feedback" aria-live="polite" style="min-height:1.8em;text-align:left;padding-left:2px"></p>
+      </section>
+
+      <footer>きろくは この たんまつに ほぞんされます。つぎに ひらいても つづきから あそべます。</footer>
     </main>
 
     <script>
@@ -909,69 +934,64 @@
           okinawa: artIcon('<circle cx="13" cy="13" r="5" fill="#b5651d"/><circle cx="35" cy="13" r="5" fill="#b5651d"/><circle cx="13" cy="13" r="2.2" fill="#8a4b2a"/><circle cx="35" cy="13" r="2.2" fill="#8a4b2a"/><path d="M24,8 C34,8 40,16 39,26 C38,36 32,43 24,43 C16,43 10,36 9,26 C8,16 14,8 24,8 Z" fill="#d97706"/><path d="M11,20 C9,14 13,9 18,8 M37,20 C39,14 35,9 30,8" stroke="#b5651d" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="18.5" cy="23" r="2.4" fill="#21343b"/><circle cx="29.5" cy="23" r="2.4" fill="#21343b"/><ellipse cx="24" cy="31" rx="5" ry="4" fill="#fdf3d8"/><circle cx="22.5" cy="30" r=".9" fill="#21343b"/><circle cx="25.5" cy="30" r=".9" fill="#21343b"/><path d="M21,34 q3,2 6,0" stroke="#21343b" stroke-width="1.8" fill="none" stroke-linecap="round"/>')
         };
 
-        /* ---------- サンプルの進み具合（試作用） ---------- */
+        /* ---------- きろくの ほぞん（この たんまつ内） ---------- */
         function dateKey(d) {
           function pad(n) { return (n < 10 ? "0" : "") + n; }
           return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
         }
         var today = new Date();
-        var dAgo = function (n) { var d = new Date(today); d.setDate(d.getDate() - n); return d; };
+        var STORAGE_KEY = "nippon-chizu-kiroku-v1";
+
+        function emptyState() {
+          var o = {};
+          PREFS.forEach(function (p) { o[p.id] = { s: 0, learned: null, tries: 0 }; });
+          return o;
+        }
+        function loadSaved() {
+          try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return null;
+            var data = JSON.parse(raw);
+            if (!data || typeof data !== "object") return null;
+            var st = emptyState();
+            if (data.state) {
+              PREFS.forEach(function (p) {
+                var v = data.state[p.id];
+                if (v && typeof v === "object") {
+                  st[p.id] = {
+                    s: (v.s === 1 || v.s === 2) ? v.s : 0,
+                    learned: (typeof v.learned === "string" && v.learned) ? v.learned : null,
+                    tries: (typeof v.tries === "number" && v.tries >= 0) ? Math.floor(v.tries) : 0
+                  };
+                }
+              });
+            }
+            var rec = {};
+            if (data.records && typeof data.records === "object") {
+              Object.keys(data.records).forEach(function (k) {
+                var arr = data.records[k];
+                if (Array.isArray(arr)) {
+                  rec[k] = arr.filter(function (id) { return !!byId[id]; });
+                }
+              });
+            }
+            return { state: st, records: rec };
+          } catch (e) { return null; }
+        }
+        function saveData() {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ state: state, records: records }));
+          } catch (e) { /* ほぞんできない環境では、その場の表示だけで続ける */ }
+        }
+        function clearSaved() {
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        }
 
         // state: 0=まだ 1=もうすこし 2=おぼえた
-        var state = {
-          hokkaido: { s: 2, learned: dateKey(dAgo(2)), tries: 3 },
-          aomori:    { s: 2, learned: dateKey(dAgo(1)), tries: 2 },
-          iwate:     { s: 1, learned: null, tries: 1 },
-          miyagi:    { s: 2, learned: dateKey(today), tries: 2 },
-          akita:     { s: 0, learned: null, tries: 0 },
-          yamagata:  { s: 0, learned: null, tries: 0 },
-          fukushima: { s: 0, learned: null, tries: 0 },
-          gunma:     { s: 0, learned: null, tries: 0 },
-          tochigi:   { s: 0, learned: null, tries: 0 },
-          ibaraki:   { s: 0, learned: null, tries: 0 },
-          saitama:   { s: 0, learned: null, tries: 0 },
-          chiba:     { s: 0, learned: null, tries: 0 },
-          kanagawa:  { s: 0, learned: null, tries: 0 },
-          tokyo:     { s: 0, learned: null, tries: 0 },
-          niigata:   { s: 0, learned: null, tries: 0 },
-          toyama:    { s: 0, learned: null, tries: 0 },
-          ishikawa:  { s: 0, learned: null, tries: 0 },
-          fukui:     { s: 0, learned: null, tries: 0 },
-          nagano:    { s: 0, learned: null, tries: 0 },
-          gifu:      { s: 0, learned: null, tries: 0 },
-          yamanashi: { s: 0, learned: null, tries: 0 },
-          shizuoka:  { s: 0, learned: null, tries: 0 },
-          aichi:     { s: 0, learned: null, tries: 0 },
-          mie:       { s: 0, learned: null, tries: 0 },
-          shiga:     { s: 0, learned: null, tries: 0 },
-          kyoto:     { s: 0, learned: null, tries: 0 },
-          osaka:     { s: 0, learned: null, tries: 0 },
-          hyogo:     { s: 0, learned: null, tries: 0 },
-          nara:      { s: 0, learned: null, tries: 0 },
-          wakayama:  { s: 0, learned: null, tries: 0 },
-          tottori:   { s: 0, learned: null, tries: 0 },
-          shimane:   { s: 0, learned: null, tries: 0 },
-          okayama:   { s: 0, learned: null, tries: 0 },
-          hiroshima: { s: 0, learned: null, tries: 0 },
-          yamaguchi: { s: 0, learned: null, tries: 0 },
-          tokushima: { s: 0, learned: null, tries: 0 },
-          kagawa:    { s: 0, learned: null, tries: 0 },
-          ehime:     { s: 0, learned: null, tries: 0 },
-          kochi:     { s: 0, learned: null, tries: 0 },
-          saga:      { s: 0, learned: null, tries: 0 },
-          fukuoka:   { s: 0, learned: null, tries: 0 },
-          oita:      { s: 0, learned: null, tries: 0 },
-          nagasaki:  { s: 0, learned: null, tries: 0 },
-          kumamoto:  { s: 0, learned: null, tries: 0 },
-          miyazaki:  { s: 0, learned: null, tries: 0 },
-          kagoshima: { s: 0, learned: null, tries: 0 },
-          okinawa:   { s: 0, learned: null, tries: 0 }
-        };
-        // 日ごとの記録（サンプル＋この画面で学んだぶん）
-        var records = {};
-        records[dateKey(dAgo(2))] = ["hokkaido"];
-        records[dateKey(dAgo(1))] = ["aomori", "iwate"];
-        records[dateKey(today)] = ["miyagi"];
+        var savedData = loadSaved();
+        var state = savedData ? savedData.state : emptyState();
+        // 日ごとの記録（ほぞんされた分＋この画面で学んだぶん）
+        var records = savedData ? savedData.records : {};
 
         var mode = "miyou";
         var selectedId = "hokkaido";
@@ -1164,6 +1184,7 @@
           } else if (st.s === 0) {
             st.s = 1;
           }
+          saveData();
           refreshProgress();
           paintMap();
           renderCalendar();
@@ -1376,9 +1397,44 @@
           });
         }
 
+        /* ---------- リセット ---------- */
+        function doReset() {
+          state = emptyState();
+          records = {};
+          clearSaved();
+          calPicked = dateKey(today);
+          sagaOk = 0; sagaTried = 0;
+          document.getElementById("reset-confirm").hidden = true;
+          document.getElementById("reset-main").hidden = false;
+          var fb = document.getElementById("reset-feedback");
+          fb.textContent = "○ きろくを ぜんぶ けしたよ。はじめから あそべるよ。";
+          fb.className = "feedback ok";
+          speak("きろくを、ぜんぶ けしたよ。はじめから、あそべるよ。");
+          refreshProgress();
+          paintMap();
+          renderDetail();
+          renderCalendar();
+          if (mode === "sagasou") renderSaga();
+        }
+        document.getElementById("reset-btn").addEventListener("click", function () {
+          document.getElementById("reset-feedback").textContent = "";
+          document.getElementById("reset-main").hidden = true;
+          document.getElementById("reset-confirm").hidden = false;
+          speak("ほんとうに、ぜんぶ けしますか。けした きろくは、もどせません。");
+          document.getElementById("reset-cancel").focus();
+        });
+        document.getElementById("reset-cancel").addEventListener("click", function () {
+          document.getElementById("reset-confirm").hidden = true;
+          document.getElementById("reset-main").hidden = false;
+        });
+        document.getElementById("reset-yes").addEventListener("click", doReset);
+        document.getElementById("reset-listen").addEventListener("click", function () {
+          speak("きろくを リセット。おぼえた けん、れんしゅうの かいすう、カレンダーの スタンプを、ぜんぶ けして、はじめからに もどします。けした きろくは、もどせません。");
+        });
+
         /* ---------- ページ全体の「きく」ボタン ---------- */
         document.getElementById("lead-listen").addEventListener("click", function () {
-          speak("さめちゃんと、しまちゃんの、にっぽんちず。ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわブロック。ぜんぶで 47こ。" +
+          speak("さめちゃんと、しまちゃんの、にっぽんちず。ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわ。ぜんぶで 47こ。" +
             "ちずを タップして、あそびながら おぼえる にっぽんちず。" +
             "かく れんしゅうは ありません。きいて、さがして、えらぶだけ。");
         });
