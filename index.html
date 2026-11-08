@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
-    <title>にっぽんちず</title>
+    <title>にっぽんちず おためしばん（むりょう）</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
@@ -313,6 +313,13 @@
       .cal-detail p { margin: 0; }
       .gentle { color: var(--ink-soft); font-size: .92rem; }
 
+      .trial-badge { display:inline-flex; align-items:center; background:var(--coral); color:#fff; font-weight:800; border-radius:999px; padding:4px 14px; font-size:.92rem; margin:0 0 6px; line-height:1.6; }
+      .trial-badge rt { color:#ffe1db; }
+      .pref.locked text { opacity:.85; }
+      .pref.locked .mark { font-size:13px; }
+      .state-badge.locked-badge { background:#7d8f94; color:#fff; }
+      @media (prefers-color-scheme: dark) { .state-badge.locked-badge { background:#546e76; color:#eef6f4; } }
+      .paid-card { border-color: var(--accent); border-width:2px; }
       footer { margin-top: 26px; color: var(--ink-soft); font-size: .85rem; text-align: center; }
       @media (prefers-reduced-motion: reduce) {
         .bar > div, .pref path { transition: none; }
@@ -322,10 +329,11 @@
   </head>
   <body>
     <main>
+      <p class="trial-badge">おためし<ruby>版<rt>ばん</rt></ruby>（むりょう）</p>
       <h1>さめちゃんと しまちゃんの にっぽんちず
-        <span class="sub">ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわ</span>
+        <span class="sub">おためしばん（むりょう）｜ほっかいどう・とうほく・かんとうの 14けん</span>
       </h1>
-      <p class="lead">ちずを タップして、あそびながら おぼえる にっぽんちず。かく れんしゅうは ありません。きいて、さがして、えらぶだけ。</p>
+      <p class="lead">これは おためし<ruby>版<rt>ばん</rt></ruby>（むりょう）です。ほっかいどう・とうほく・かんとうの 14<ruby>県<rt>けん</rt></ruby>で あそべます。ちずを タップして、あそびながら おぼえる にっぽんちず。かく れんしゅうは ありません。きいて、さがして、えらぶだけ。ほかの 33<ruby>県<rt>けん</rt></ruby>は、はいいろで 🔒が ついていて、<ruby>有料版<rt>ゆうりょうばん</rt></ruby>で あそべます。</p>
       <div class="btn-row">
         <button class="btn btn-ghost btn-small" id="lead-listen" type="button">🔊 せつめいを きく</button>
       </div>
@@ -335,15 +343,15 @@
         <div class="head-row">
           <div>
             <h2 id="map-h">ぬりえマップ</h2>
-            <p class="card-note">おぼえた <ruby>県<rt>けん</rt></ruby>から、いろが ついていくよ。ちずを タップすると、その <ruby>県<rt>けん</rt></ruby>の ことが わかるよ。ちずの <ruby>県<rt>けん</rt></ruby>の なまえにも フリガナが ついているよ。</p>
+            <p class="card-note">おぼえた <ruby>県<rt>けん</rt></ruby>から、いろが ついていくよ。おためし<ruby>版<rt>ばん</rt></ruby>では 14<ruby>県<rt>けん</rt></ruby>だけ あそべます。はいいろで 🔒が ついた <ruby>県<rt>けん</rt></ruby>は <ruby>有料版<rt>ゆうりょうばん</rt></ruby>で あそべます。タップすると せつめいが でます。ちずの <ruby>県<rt>けん</rt></ruby>の なまえにも フリガナが ついているよ。</p>
           </div>
           <button class="btn btn-ghost btn-small" id="map-listen" type="button" aria-label="ぬりえマップの せつめいと すすみぐあいを きく">🔊 きく</button>
         </div>
 
         <div class="progress-row">
-          <span class="progress-big"><span class="num" id="done-count">0</span> / 47 こ おぼえた</span>
+          <span class="progress-big"><span class="num" id="done-count">0</span> / 14 こ おぼえた</span>
         </div>
-        <div class="bar" role="progressbar" aria-label="おぼえた わりあい" aria-valuemin="0" aria-valuemax="47" aria-valuenow="0" id="bar">
+        <div class="bar" role="progressbar" aria-label="おぼえた わりあい" aria-valuemin="0" aria-valuemax="14" aria-valuenow="0" id="bar">
           <div id="bar-fill" style="width:0%"></div>
         </div>
         <div class="chips" aria-label="じょうたいの かず">
@@ -353,9 +361,9 @@
         </div>
 
         <div class="map-wrap" style="margin-top:14px">
-          <svg class="map" id="japan-map" viewBox="-580 0 1000 1450" role="group" aria-label="ほっかいどうと とうほくと かんとうと ちゅうぶと きんきと ちゅうごくと しこくと きゅうしゅうと おきなわの ちず"></svg>
+          <svg class="map" id="japan-map" viewBox="-580 0 1000 1450" role="group" aria-label="にっぽんの ちず。おためしばんでは ほっかいどう・とうほく・かんとうの 14けんが あそべて、ほかの けんは はいいろで ゆうりょうばん"></svg>
         </div>
-        <p class="map-caption">※ かたちは かんたんにした れんしゅう<ruby>用<rt>よう</rt></ruby>の ちずです。ぜんぶで 47こ、そろったよ。おきなわは はなれた <ruby>島<rt>しま</rt></ruby>なので、したのほうに おいてあるよ。</p>
+        <p class="map-caption">※ かたちは かんたんにした れんしゅう<ruby>用<rt>よう</rt></ruby>の ちずです。ちずには 47<ruby>県<rt>けん</rt></ruby> ぜんぶが でていますが、おためし<ruby>版<rt>ばん</rt></ruby>では 14<ruby>県<rt>けん</rt></ruby>だけ あそべます。はいいろで 🔒の <ruby>県<rt>けん</rt></ruby>は <ruby>有料版<rt>ゆうりょうばん</rt></ruby>です。おきなわは はなれた <ruby>島<rt>しま</rt></ruby>なので、したのほうに おいてあるよ。</p>
       </section>
 
       <!-- ステップ切替 -->
@@ -376,7 +384,7 @@
         <div class="q-banner">
           <p class="q-label">もんだい</p>
           <p class="q-main" id="saga-q">「<span id="saga-name"></span>」は どこ？</p>
-          <p class="q-sub">うえの ちずで、その <ruby>県<rt>けん</rt></ruby>を タップしてね。</p>
+          <p class="q-sub">うえの ちずで、その <ruby>県<rt>けん</rt></ruby>を タップしてね。もんだいは おためし<ruby>版<rt>ばん</rt></ruby>の 14<ruby>県<rt>けん</rt></ruby>から でます。はいいろの <ruby>県<rt>けん</rt></ruby>を タップすると せつめいが でます。</p>
         </div>
         <div class="btn-row" style="justify-content:center">
           <button class="btn btn-ghost" id="saga-listen" type="button">🔊 もんだいを きく</button>
@@ -419,6 +427,19 @@
         <div class="cal-detail" id="cal-detail" aria-live="polite"></div>
       </section>
 
+      <!-- 有料版の案内 -->
+      <section class="card paid-card" aria-labelledby="paid-h">
+        <div class="head-row">
+          <div>
+            <h2 id="paid-h">ぜんぶの <ruby>県<rt>けん</rt></ruby>で あそぶには（<ruby>有料版<rt>ゆうりょうばん</rt></ruby>）</h2>
+            <p class="card-note">おためし<ruby>版<rt>ばん</rt></ruby>は 14<ruby>県<rt>けん</rt></ruby>までです。<ruby>有料版<rt>ゆうりょうばん</rt></ruby>では 47<ruby>県<rt>けん</rt></ruby> ぜんぶで あそべます。</p>
+          </div>
+          <button class="btn btn-ghost btn-small" id="paid-listen" type="button" aria-label="ゆうりょうばんの あんないを きく">🔊 きく</button>
+        </div>
+        <p style="margin:0 0 8px"><ruby>有料版<rt>ゆうりょうばん</rt></ruby>の <ruby>案内<rt>あんない</rt></ruby>は note に あります。note で <ruby>有料版<rt>ゆうりょうばん</rt></ruby>を かうと、47<ruby>県<rt>けん</rt></ruby> ぜんぶで あそべる <ruby>場所<rt>ばしょ</rt></ruby>が わかります。</p>
+        <p class="gentle" style="margin:0">この ページからは かえません。note の <ruby>案内<rt>あんない</rt></ruby>を みてね。</p>
+      </section>
+
       <!-- リセット -->
       <section class="card" aria-labelledby="reset-h">
         <div class="head-row">
@@ -444,7 +465,7 @@
         <p class="feedback" id="reset-feedback" aria-live="polite" style="min-height:1.8em;text-align:left;padding-left:2px"></p>
       </section>
 
-      <footer>きろくは この たんまつに ほぞんされます。つぎに ひらいても つづきから あそべます。</footer>
+      <footer>きろくは この たんまつに ほぞんされます（おためしばん よう）。つぎに ひらいても つづきから あそべます。</footer>
     </main>
 
     <script>
@@ -879,6 +900,10 @@
         ];
         var byId = {};
         PREFS.forEach(function (p) { byId[p.id] = p; });
+        var TRIAL_IDS = { hokkaido: 1, aomori: 1, akita: 1, iwate: 1, yamagata: 1, miyagi: 1, fukushima: 1, gunma: 1, tochigi: 1, ibaraki: 1, saitama: 1, chiba: 1, kanagawa: 1, tokyo: 1 };
+        function isPlayable(id) { return !!TRIAL_IDS[id]; }
+        var PLAYABLE = PREFS.filter(function (p) { return isPlayable(p.id); });
+        function lockedSpeech(p) { return p.yomi + "は、おためしばんでは まだ あそべません。ゆうりょうばんで あそべます。ゆうりょうばんの あんないは、note に あります。"; }
 
         /* ---------- 有名なもののイラスト（アイコン） ---------- */
         function artIcon(inner) {
@@ -940,11 +965,11 @@
           return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
         }
         var today = new Date();
-        var STORAGE_KEY = "nippon-chizu-kiroku-v1";
+        var STORAGE_KEY = "nippon-chizu-trial-kiroku-v1";
 
         function emptyState() {
           var o = {};
-          PREFS.forEach(function (p) { o[p.id] = { s: 0, learned: null, tries: 0 }; });
+          PLAYABLE.forEach(function (p) { o[p.id] = { s: 0, learned: null, tries: 0 }; });
           return o;
         }
         function loadSaved() {
@@ -955,7 +980,7 @@
             if (!data || typeof data !== "object") return null;
             var st = emptyState();
             if (data.state) {
-              PREFS.forEach(function (p) {
+              PLAYABLE.forEach(function (p) {
                 var v = data.state[p.id];
                 if (v && typeof v === "object") {
                   st[p.id] = {
@@ -971,7 +996,7 @@
               Object.keys(data.records).forEach(function (k) {
                 var arr = data.records[k];
                 if (Array.isArray(arr)) {
-                  rec[k] = arr.filter(function (id) { return !!byId[id]; });
+                  rec[k] = arr.filter(function (id) { return !!byId[id] && isPlayable(id); });
                 }
               });
             }
@@ -1024,13 +1049,14 @@
         }
         function counts() {
           var c = [0, 0, 0];
-          PREFS.forEach(function (p) { c[state[p.id].s]++; });
+          PLAYABLE.forEach(function (p) { if (state[p.id]) c[state[p.id].s]++; });
           return c;
         }
         function mapSpeech() {
           var c = counts();
-          return "ぬりえマップ。おぼえた けんから、いろが ついていくよ。" +
-            "ぜんぶで " + PREFS.length + "こ。おぼえた " + c[2] + "こ。もうすこし " + c[1] + "こ。まだ " + c[0] + "こ。" +
+          return "ぬりえマップ。おためしばん、むりょう。おぼえた けんから、いろが ついていくよ。" +
+            "おためしばんでは " + PLAYABLE.length + "こ あそべます。おぼえた " + c[2] + "こ。もうすこし " + c[1] + "こ。まだ " + c[0] + "こ。" +
+            "はいいろで かぎが ついた けんは、ゆうりょうばんで あそべます。" +
             "ちずを タップすると、その けんの ことが わかるよ。" +
             "かたちは かんたんにした、れんしゅうようの ちずです。";
         }
@@ -1053,10 +1079,10 @@
 
         PREFS.forEach(function (p) {
           var g = document.createElementNS(SVGNS, "g");
-          g.setAttribute("class", "pref");
+          g.setAttribute("class", isPlayable(p.id) ? "pref" : "pref locked");
           g.setAttribute("tabindex", "0");
           g.setAttribute("role", "button");
-          g.setAttribute("aria-label", p.name + "（" + p.yomi + "）");
+          g.setAttribute("aria-label", p.name + "（" + p.yomi + "）" + (isPlayable(p.id) ? "" : "。おためしばんでは あそべません。ゆうりょうばんです"));
           g.dataset.id = p.id;
 
           var path = document.createElementNS(SVGNS, "path");
@@ -1097,8 +1123,15 @@
 
         function paintMap() {
           PREFS.forEach(function (p) {
-            var st = state[p.id].s;
             var el = prefEls[p.id];
+            if (!isPlayable(p.id)) {
+              el.path.setAttribute("fill", "#9aa7ab");
+              el.path.setAttribute("fill-opacity", "0.78");
+              el.mark.textContent = "🔒";
+              el.g.classList.toggle("selected", p.id === selectedId && mode !== "sagasou");
+              return;
+            }
+            var st = state[p.id].s;
             if (st === 2) {
               el.path.setAttribute("fill", p.color);
               el.path.setAttribute("fill-opacity", "1");
@@ -1123,7 +1156,7 @@
           document.getElementById("c2").textContent = c[2];
           document.getElementById("c1").textContent = c[1];
           document.getElementById("c0").textContent = c[0];
-          document.getElementById("bar-fill").style.width = (c[2] / PREFS.length * 100) + "%";
+          document.getElementById("bar-fill").style.width = (c[2] / PLAYABLE.length * 100) + "%";
           document.getElementById("bar").setAttribute("aria-valuenow", c[2]);
         }
 
@@ -1134,8 +1167,20 @@
         }
 
         /* ---------- STEP1 みよう：詳細カード（見出し語は漢字＋フリガナ） ---------- */
+        function renderLockedDetail(p) {
+          var html =
+            '<span class="state-badge locked-badge">🔒 ゆうりょうばん</span>' +
+            '<p class="detail-name">' + p.nameHtml + "</p>" +
+            '<p class="detail-yomi">' + p.yomi + "</p>" +
+            '<p style="font-weight:800;font-size:1.05rem;line-height:1.9;margin:0 0 8px">この <ruby>県<rt>けん</rt></ruby>は おためし<ruby>版<rt>ばん</rt></ruby>では まだ あそべません。<ruby>有料版<rt>ゆうりょうばん</rt></ruby>で あそべます。</p>' +
+            '<p class="gentle" style="margin:0"><ruby>有料版<rt>ゆうりょうばん</rt></ruby>の <ruby>案内<rt>あんない</rt></ruby>は note に あります。おためし<ruby>版<rt>ばん</rt></ruby>では ほっかいどう・とうほく・かんとうの 14<ruby>県<rt>けん</rt></ruby>で あそべます。</p>' +
+            '<div class="btn-row"><button class="btn btn-primary" type="button" id="locked-listen">🔊 せつめいを きく</button></div>';
+          document.getElementById("detail").innerHTML = html;
+          document.getElementById("locked-listen").addEventListener("click", function () { speak(lockedSpeech(p)); });
+        }
         function renderDetail() {
           var p = byId[selectedId];
+          if (!isPlayable(p.id)) { renderLockedDetail(p); return; }
           var st = state[p.id];
           var html =
             '<span class="state-badge s' + st.s + '">' + stateText[st.s] + "</span>" +
@@ -1165,6 +1210,14 @@
 
         /* ---------- 地図タップの振り分け ---------- */
         function onPrefTap(id) {
+          if (!isPlayable(id)) {
+            selectedId = id;
+            if (mode !== "miyou") setMode("miyou");
+            renderLockedDetail(byId[id]);
+            paintMap();
+            speak(lockedSpeech(byId[id]));
+            return;
+          }
           if (mode === "sagasou") { answerSaga(id); return; }
           selectedId = id;
           if (mode !== "miyou") setMode("miyou");
@@ -1174,6 +1227,7 @@
         }
 
         function markLearned(p, full) {
+          if (!isPlayable(p.id) || !state[p.id]) return;
           var st = state[p.id];
           st.tries++;
           var tk = dateKey(new Date());
@@ -1200,7 +1254,7 @@
           return pool[Math.floor(Math.random() * pool.length)];
         }
         function newSaga() {
-          sagaTarget = pickRandom(PREFS.map(function (p) { return p.id; }), sagaTarget);
+          sagaTarget = pickRandom(PLAYABLE.map(function (p) { return p.id; }), sagaTarget);
           sagaLock = false;
           renderSaga();
         }
@@ -1217,6 +1271,7 @@
             sagaTried > 0 ? ("せいかい " + sagaOk + " / " + sagaTried + " もん") : "";
         }
         function answerSaga(id) {
+          if (!isPlayable(id)) return;
           if (sagaLock || !sagaTarget) return;
           var fb = document.getElementById("saga-feedback");
           sagaTried++;
@@ -1251,11 +1306,11 @@
             : { text: pref.famous, yomi: pref.famousYomi, html: pref.famousHtml, art: FAMOUS_ART[pref.id] || "" };
         }
         function newEra() {
-          var p = PREFS[Math.floor(Math.random() * PREFS.length)];
+          var p = PLAYABLE[Math.floor(Math.random() * PLAYABLE.length)];
           var kind = Math.random() < 0.5 ? "capital" : "famous";
           var answer = choiceOf(p, kind).text;
           // おなじ こたえ（れい：りんご）が 2つ ならばないようにする
-          var others = PREFS.filter(function (x) {
+          var others = PLAYABLE.filter(function (x) {
             return x.id !== p.id && choiceOf(x, kind).text !== answer;
           });
           // ダミー選択肢を2つ（フリガナ付き）
@@ -1434,9 +1489,10 @@
 
         /* ---------- ページ全体の「きく」ボタン ---------- */
         document.getElementById("lead-listen").addEventListener("click", function () {
-          speak("さめちゃんと、しまちゃんの、にっぽんちず。ほっかいどう・とうほく・かんとう・ちゅうぶ・きんき・ちゅうごく・しこく・きゅうしゅう・おきなわ。ぜんぶで 47こ。" +
+          speak("さめちゃんと、しまちゃんの、にっぽんちず。おためしばん、むりょう。ほっかいどう・とうほく・かんとうの、14けんで あそべます。" +
             "ちずを タップして、あそびながら おぼえる にっぽんちず。" +
-            "かく れんしゅうは ありません。きいて、さがして、えらぶだけ。");
+            "かく れんしゅうは ありません。きいて、さがして、えらぶだけ。" +
+            "ほかの 33けんは、ゆうりょうばんで あそべます。ゆうりょうばんの あんないは、note に あります。");
         });
         document.getElementById("map-listen").addEventListener("click", function () {
           speak(mapSpeech());
@@ -1444,6 +1500,11 @@
         document.getElementById("cal-listen").addEventListener("click", function () {
           speak("きろくカレンダー。べんきょうした ひにだけ、スタンプが つくよ。" +
             "おやすみの ひは、そのままで だいじょうぶ。" + calSpeechFor(calPicked));
+        });
+
+        var paidBtn = document.getElementById("paid-listen");
+        if (paidBtn) paidBtn.addEventListener("click", function () {
+          speak("ぜんぶの けんで あそぶには、ゆうりょうばん。おためしばんは 14けんまでです。ゆうりょうばんでは 47けん ぜんぶで あそべます。ゆうりょうばんの あんないは、note に あります。note で かうと、47けん ぜんぶで あそべる ばしょが わかります。このページからは かえません。");
         });
 
         /* ---------- タブ切替 ---------- */
